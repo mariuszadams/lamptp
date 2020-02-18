@@ -462,7 +462,7 @@
       "displayName": "Git Repository URL",
       "description": "The URL of the repository with your application source code.",
       "required": true,
-      "value": "https://gitlab.com/mariuszadams/lamptp"
+      "value": "https://github.com/mariuszadams/lamptp"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",
