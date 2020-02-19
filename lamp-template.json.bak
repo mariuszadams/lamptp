@@ -462,7 +462,7 @@
       "displayName": "Git Repository URL",
       "description": "The URL of the repository with your application source code.",
       "required": true,
-      "value": "https://github.com/mariuszadams/tpl-l1"
+      "value": "https://github.com/mariuszadams/lamptp"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",
@@ -473,7 +473,6 @@
       "name": "CONTEXT_DIR",
       "displayName": "Context Directory",
       "description": "Set this to the relative path to your project if it is not in the root of your repository."
-      "value": "src"
     },
     {
       "name": "APPLICATION_DOMAIN",
