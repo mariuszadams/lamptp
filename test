@@ -1,0 +1,474 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "apps.openshift.io/v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "annotations": {
+                    "description": "Defines how to deploy the application server",
+                    "openshift.io/generated-by": "OpenShiftNewApp",
+                    "template.alpha.openshift.io/wait-for-ready": "true"
+                },
+                "creationTimestamp": "2020-02-19T22:02:37Z",
+                "generation": 3,
+                "labels": {
+                    "app": "lamp",
+                    "template": "lamp"
+                },
+                "name": "lamp",
+                "namespace": "pd",
+                "resourceVersion": "1614964",
+                "selfLink": "/apis/apps.openshift.io/v1/namespaces/pd/deploymentconfigs/lamp",
+                "uid": "8a2d4c23-5363-11ea-a219-0a580a80018e"
+            },
+            "spec": {
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "name": "lamp"
+                },
+                "strategy": {
+                    "activeDeadlineSeconds": 21600,
+                    "resources": {},
+                    "rollingParams": {
+                        "intervalSeconds": 1,
+                        "maxSurge": "25%",
+                        "maxUnavailable": "25%",
+                        "timeoutSeconds": 600,
+                        "updatePeriodSeconds": 1
+                    },
+                    "type": "Rolling"
+                },
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "openshift.io/generated-by": "OpenShiftNewApp"
+                        },
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "lamp"
+                        },
+                        "name": "lamp"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "DATABASE_SERVICE_NAME",
+                                        "value": "mariadb"
+                                    },
+                                    {
+                                        "name": "DATABASE_ENGINE",
+                                        "value": "mysql"
+                                    },
+                                    {
+                                        "name": "DATABASE_NAME",
+                                        "value": "default"
+                                    },
+                                    {
+                                        "name": "DATABASE_USER",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-user",
+                                                "name": "lamp"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "DATABASE_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-password",
+                                                "name": "lamp"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "OPCACHE_REVALIDATE_FREQ",
+                                        "value": "2"
+                                    },
+                                    {
+                                        "name": "MMEN",
+                                        "valueFrom": {
+                                            "configMapKeyRef": {
+                                                "key": "MMen",
+                                                "name": "mm"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "MWOMEN",
+                                        "valueFrom": {
+                                            "configMapKeyRef": {
+                                                "key": "MWomen",
+                                                "name": "mm"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "image": "image-registry.openshift-image-registry.svc:5000/pd/lamp@sha256:48bae19ff1fa5d0df7c7236861fe90f39707b873f6f0a670cced0265f61d6eaf",
+                                "imagePullPolicy": "IfNotPresent",
+                                "livenessProbe": {
+                                    "failureThreshold": 3,
+                                    "httpGet": {
+                                        "path": "/.health.html",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 30,
+                                    "periodSeconds": 60,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 3
+                                },
+                                "name": "lamp",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "failureThreshold": 3,
+                                    "initialDelaySeconds": 3,
+                                    "periodSeconds": 60,
+                                    "successThreshold": 1,
+                                    "tcpSocket": {
+                                        "port": 8080
+                                    },
+                                    "timeoutSeconds": 3
+                                },
+                                "resources": {
+                                    "limits": {
+                                        "memory": "512Mi"
+                                    }
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File"
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "schedulerName": "default-scheduler",
+                        "securityContext": {},
+                        "terminationGracePeriodSeconds": 30
+                    }
+                },
+                "test": false,
+                "triggers": [
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "lamp"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "lamp:latest",
+                                "namespace": "pd"
+                            },
+                            "lastTriggeredImage": "image-registry.openshift-image-registry.svc:5000/pd/lamp@sha256:48bae19ff1fa5d0df7c7236861fe90f39707b873f6f0a670cced0265f61d6eaf"
+                        },
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            },
+            "status": {
+                "availableReplicas": 1,
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2020-02-19T22:09:56Z",
+                        "lastUpdateTime": "2020-02-19T22:09:56Z",
+                        "message": "Deployment config has minimum availability.",
+                        "status": "True",
+                        "type": "Available"
+                    },
+                    {
+                        "lastTransitionTime": "2020-02-19T22:09:56Z",
+                        "lastUpdateTime": "2020-02-19T22:09:58Z",
+                        "message": "replication controller \"lamp-2\" successfully rolled out",
+                        "reason": "NewReplicationControllerAvailable",
+                        "status": "True",
+                        "type": "Progressing"
+                    }
+                ],
+                "details": {
+                    "causes": [
+                        {
+                            "type": "ConfigChange"
+                        }
+                    ],
+                    "message": "config change"
+                },
+                "latestVersion": 2,
+                "observedGeneration": 3,
+                "readyReplicas": 1,
+                "replicas": 1,
+                "unavailableReplicas": 0,
+                "updatedReplicas": 1
+            }
+        },
+        {
+            "apiVersion": "apps.openshift.io/v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "annotations": {
+                    "description": "Defines how to deploy the database",
+                    "openshift.io/generated-by": "OpenShiftNewApp",
+                    "template.alpha.openshift.io/wait-for-ready": "true"
+                },
+                "creationTimestamp": "2020-02-19T22:02:38Z",
+                "generation": 2,
+                "labels": {
+                    "app": "lamp",
+                    "template": "lamp"
+                },
+                "name": "mariadb",
+                "namespace": "pd",
+                "resourceVersion": "1613268",
+                "selfLink": "/apis/apps.openshift.io/v1/namespaces/pd/deploymentconfigs/mariadb",
+                "uid": "8a9d5a97-5363-11ea-a219-0a580a80018e"
+            },
+            "spec": {
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "name": "mariadb"
+                },
+                "strategy": {
+                    "activeDeadlineSeconds": 21600,
+                    "recreateParams": {
+                        "timeoutSeconds": 600
+                    },
+                    "resources": {},
+                    "type": "Recreate"
+                },
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "openshift.io/generated-by": "OpenShiftNewApp"
+                        },
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "mariadb"
+                        },
+                        "name": "mariadb"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "MYSQL_USER",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-user",
+                                                "name": "lamp"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "MYSQL_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-password",
+                                                "name": "lamp"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "MYSQL_DATABASE",
+                                        "value": "default"
+                                    }
+                                ],
+                                "image": "image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8",
+                                "imagePullPolicy": "IfNotPresent",
+                                "livenessProbe": {
+                                    "failureThreshold": 3,
+                                    "initialDelaySeconds": 30,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "tcpSocket": {
+                                        "port": 3306
+                                    },
+                                    "timeoutSeconds": 1
+                                },
+                                "name": "mariadb",
+                                "ports": [
+                                    {
+                                        "containerPort": 3306,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/sh",
+                                            "-i",
+                                            "-c",
+                                            "MYSQL_PWD='dat431bMc2ihYwPc' mysql -h 127.0.0.1 -u dbuser -D default -e 'SELECT 1'"
+                                        ]
+                                    },
+                                    "failureThreshold": 3,
+                                    "initialDelaySeconds": 5,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 1
+                                },
+                                "resources": {
+                                    "limits": {
+                                        "memory": "512Mi"
+                                    }
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/var/lib/mysql/data",
+                                        "name": "mariadb-data"
+                                    }
+                                ]
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "schedulerName": "default-scheduler",
+                        "securityContext": {},
+                        "terminationGracePeriodSeconds": 30,
+                        "volumes": [
+                            {
+                                "name": "mariadb-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "mariadb"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "test": false,
+                "triggers": [
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "mariadb"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "mariadb:10.2",
+                                "namespace": "openshift"
+                            },
+                            "lastTriggeredImage": "image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:9b68994d8629ef34cfd68affbc4a7a3122d376cc364035d4a1d1e529b8c661c8"
+                        },
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            },
+            "status": {
+                "availableReplicas": 1,
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2020-02-19T22:03:32Z",
+                        "lastUpdateTime": "2020-02-19T22:03:32Z",
+                        "message": "Deployment config has minimum availability.",
+                        "status": "True",
+                        "type": "Available"
+                    },
+                    {
+                        "lastTransitionTime": "2020-02-19T22:03:33Z",
+                        "lastUpdateTime": "2020-02-19T22:03:33Z",
+                        "message": "replication controller \"mariadb-1\" successfully rolled out",
+                        "reason": "NewReplicationControllerAvailable",
+                        "status": "True",
+                        "type": "Progressing"
+                    }
+                ],
+                "details": {
+                    "causes": [
+                        {
+                            "type": "ConfigChange"
+                        }
+                    ],
+                    "message": "config change"
+                },
+                "latestVersion": 1,
+                "observedGeneration": 2,
+                "readyReplicas": 1,
+                "replicas": 1,
+                "unavailableReplicas": 0,
+                "updatedReplicas": 1
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "service-ca.crt": "-----BEGIN CERTIFICATE-----\nMIIDCjCCAfKgAwIBAgIBATANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDDCtvcGVu\nc2hpZnQtc2VydmljZS1zZXJ2aW5nLXNpZ25lckAxNTgxNzU4Nzc2MB4XDTIwMDIx\nNTA5MjYxNloXDTIxMDIxNDA5MjYxN1owNjE0MDIGA1UEAwwrb3BlbnNoaWZ0LXNl\ncnZpY2Utc2VydmluZy1zaWduZXJAMTU4MTc1ODc3NjCCASIwDQYJKoZIhvcNAQEB\nBQADggEPADCCAQoCggEBAL75GpeMzBBo9QpkHKTmhbYIvQkt/38OB+F0KahsGzhR\noSU0rbWlnU7SCkWrURGyTXTQ89HxZkRjNobgGwTt8/69YaOLWx3Mpkz2vUiK6g0m\n8cSJZnjZefgJ/iUoJVV5dRq4h3BEGNK8xkulPQ6V2OBhy5has3rDN8l6Ht2LxSSk\nJsWwnRznsk5zDtwu0QEdjpmVd+ncQqLRj8Dn2z8C3iA1dyN8+UReXjSLM/AD2VDu\nmKSPFCxgrmyD2q8qpR4oRUI/iJW7+mqTtX1izFpVqlJenvZcWYNhy45YYKr5a9zk\nS9t1mpSZBxdC/BUNyFIUDmFiV3arIRaLDbg6dEDAAhsCAwEAAaMjMCEwDgYDVR0P\nAQH/BAQDAgKkMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAJsX\nlIOwVkECfs13EgFoPtJskmn1GXWGa1m+A0aQ09EZXJHPT/LjgDFO6RkmNUDDjRdk\nBjFOvua5Tfr9yCDPaZS/BfMQpJM02JYwcTLth/BvoxsllrNce4Zj2Ju/dgmHxbei\nrLDtf2vdBtRbdN6nV7EcCwWCHUk6uXg8tGRnxl8yEo4r5wgu7vPMDfcUB/oeD5an\n0k1jsWWPVk1Xkkplj1AAbfqGU49Th/XK9/HBBnxfSAzUHbGw5TcDnSrOgrdmyM9U\nwav3KLZBcJJaBhcb4ShOtvOPiH63A9QysrzeqdwOFCCWCduripbuT1y4OiZV1OVh\n5fiJO1MvmQj0ICL5Rok=\n-----END CERTIFICATE-----\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "creationTimestamp": "2020-02-19T22:02:37Z",
+                "name": "lamp-1-ca",
+                "namespace": "pd",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "name": "lamp-1-build",
+                        "uid": "8a36b1fc-5363-11ea-bdce-02af5ec33078"
+                    }
+                ],
+                "resourceVersion": "1612929",
+                "selfLink": "/api/v1/namespaces/pd/configmaps/lamp-1-ca",
+                "uid": "8a37a5c7-5363-11ea-bdce-02af5ec33078"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "ConfigMap",
+            "metadata": {
+                "creationTimestamp": "2020-02-19T22:02:37Z",
+                "name": "lamp-1-sys-config",
+                "namespace": "pd",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "name": "lamp-1-build",
+                        "uid": "8a36b1fc-5363-11ea-bdce-02af5ec33078"
+                    }
+                ],
+                "resourceVersion": "1612931",
+                "selfLink": "/api/v1/namespaces/pd/configmaps/lamp-1-sys-config",
+                "uid": "8a382a53-5363-11ea-bdce-02af5ec33078"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "MMen": "Dear Gentlemen",
+                "MWomen": "Subtle Ladies"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "creationTimestamp": "2020-02-19T22:06:26Z",
+                "name": "mm",
+                "namespace": "pd",
+                "resourceVersion": "1614019",
+                "selfLink": "/api/v1/namespaces/pd/configmaps/mm",
+                "uid": "12f1fad2-5364-11ea-bdce-02af5ec33078"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": "",
+        "selfLink": ""
+    }
+}

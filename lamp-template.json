@@ -20,6 +20,17 @@
   },
   "objects": [
     {
+            "apiVersion": "v1",
+            "data": {
+                "MMen": "Dear Gentlemen",
+                "MWomen": "Subtle Ladies"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "name": "mm"
+            }
+    },
+    {
       "kind": "Secret",
       "apiVersion": "v1",
       "metadata": {
@@ -237,7 +248,16 @@
                   {
                     "name": "OPCACHE_REVALIDATE_FREQ",
                     "value": "${OPCACHE_REVALIDATE_FREQ}"
-                  }
+                  },
+                    {
+                                        "name": "HELLO",
+                                        "valueFrom": {
+                                            "configMapKeyRef": {
+                                                "key": "M${WHO}",
+                                                "name": "mm"
+                                            }
+                                        }
+                                    }
                 ],
                 "resources": {
                   "limits": {
@@ -472,7 +492,7 @@
     {
       "name": "CONTEXT_DIR",
       "displayName": "Context Directory",
-      "description": "Set this to the relative path to your project if it is not in the root of your repository."
+      "description": "Set this to the relative path to your project if it is not in the root of your repository.",
       "value": "src"
     },
     {
@@ -530,6 +550,12 @@
       "displayName": "Force Update Source Files",
       "description": "If you need update source, set true.",
       "value": ""
+    },
+    {
+      "name": "WHO",
+      "displayName": "Who",
+      "description": "Who: M/W",
+      "required": true
     }
   ]
 }
